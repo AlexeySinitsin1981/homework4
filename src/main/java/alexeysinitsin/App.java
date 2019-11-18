@@ -18,38 +18,51 @@ public class App {
                 nameFields.add(field.getName());
             }
             for (String s : fieldsToCleanup) {
-            if(!nameFields.contains(s)){
-                throw new IllegalArgumentException();
-            }
+                if (!nameFields.contains(s)) {
+                    throw new IllegalArgumentException();
+                }
             }
             for (String s : fieldsToOutput) {
-                if(!nameFields.contains(s)){
+                if (!nameFields.contains(s)) {
                     throw new IllegalArgumentException();
                 }
             }
             for (Field field : fields) {
                 for (String s : fieldsToCleanup) {
-                    if (field.getType().getName().equals("byte")) {
-                        field.setByte(object, (byte) 0);
-                    } else if (field.getType().getName().equals("short")) {
-                        field.setShort(object, (short) 0);
-                    } else if (field.getType().getName().equals("int")) {
-                        field.setInt(object, 0);
-                    } else if (field.getType().getName().equals("char")) {
-                        field.setChar(object, (char) 0);
-                    } else if (field.getType().getName().equals("long")) {
-                        field.setLong(object, 0);
-                    } else if (field.getType().getName().equals("float")) {
-                        field.setFloat(object, 0);
-                    } else if (field.getType().getName().equals("double")) {
-                        field.setDouble(object, 0);
-                    } else if (field.getType().getName().equals("boolean")) {
-                        field.setBoolean(object, false);
-                    } else if (field.getType().getName().equals("object")) {
-                        field.set(object, null);
+                    if (field.getName().equals(s)) {
+                        switch (field.getType().getName()) {
+                            case "byte":
+                                field.setByte(object, (byte) 0);
+                                break;
+                            case "short":
+                                field.setShort(object, (short) 0);
+                                break;
+                            case "char":
+                                field.setChar(object, (char) 0);
+                                break;
+                            case "int":
+                                field.setInt(object, 0);
+                                break;
+                            case "long":
+                                field.setLong(object, 0);
+                                break;
+                            case "float":
+                                field.setFloat(object, (float) 0);
+                                break;
+                            case "double":
+                                field.setDouble(object, 0);
+                                break;
+                            case "boolean":
+                                field.setBoolean(object, false);
+                                break;
+                            default:
+                                field.set(object, null);
+
+                        }
                     }
                 }
             }
+
 
             String[] primitive = {"byte", "short", "int", "char", "long", "float", "double", "boolean"};
             List<String> list = Arrays.asList(primitive);
@@ -59,10 +72,10 @@ public class App {
                 for (String s : fieldsToOutput) {
                     if (field.getName().equals(s)) {
                         if (list.contains(s)) {
-                            conversion += field.get(object) + "; ";
+                            conversion += field.get(object) + " ";
 
                         } else {
-                            conversion += field.get(object) + "; ";
+                            conversion += field.get(object) + " ";
                         }
                     }
                 }
@@ -90,51 +103,12 @@ public class App {
             Method get = clazz.getMethod("get", Object.class);
 
             for (String s : fieldsToOutput) {
-
-                System.out.println(get.invoke(object,s));
+                System.out.println(get.invoke(object, s));
             }
         }
     }
+}
 
-
-        public static void main (String[]args) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-            Animal an = new Animal();
-
-            HashMap<String, String> hm = new HashMap<>();
-
-
-            hm.put("1", "1");
-            hm.put("2", "2");
-            hm.put("3", "3");
-            hm.put("4", "4");
-
-            Set<String> fieldsToCleanup = new HashSet<>();
-            Set<String> fieldsToOutput = new HashSet<>();
-            fieldsToCleanup.add("1");
-            fieldsToCleanup.add("2");
-
-            fieldsToOutput.add("3");
-            fieldsToOutput.add("4");
-
-            cleanup(hm, fieldsToCleanup,fieldsToOutput);
-            //hm.values().stream().forEach(System.out::println);
-
-
-            Class clazz = an.getClass();
-            Field[] fields = clazz.getDeclaredFields();
-
-            for (Field field : fields) {
-                fieldsToCleanup.add(field.getName());
-            }
-            for (Field field : fields) {
-                fieldsToOutput.add(field.getName());
-            }
-
-            //App.cleanup(an, fieldsToCleanup, fieldsToOutput);
-
-
-        }
-    }
 
 
 
